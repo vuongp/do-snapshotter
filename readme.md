@@ -19,6 +19,6 @@ There are different solutions for runnning a NodeJs app like this. I personally 
 6. Add the tag `backup` to all droplets you'd like to backup with this script.
 
 ## Not a Digital Ocean user?
-Sign up through my referral link and get 10 dollars free [here](https://m.do.co/c/ad6e12bc4a13). I get 25 dollars when you've spent 25 dollars.
+Sign up through my referral link and get 10 dollars free [here](https://m.do.co/c/4677c3aa4d23). I get 25 dollars after you've spent 25 dollars.
 
 Else just visit https://www.digitalocean.com.
