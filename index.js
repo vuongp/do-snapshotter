@@ -8,8 +8,6 @@ var optionsDroplets = {
   headers: header
 };
 
-console.log(config);
-
 function dropletsCallback(error, response, body) {
   if (!error && response.statusCode == 200) {
     var droplets = JSON.parse(body).droplets;
@@ -43,6 +41,7 @@ function createSnapshot(dropletId) {
   });
 }
 
+console.log("Backup script started");
 setInterval(function(){
   request.get(optionsDroplets, dropletsCallback);
 }, 86400000 * config.intervalDays);
