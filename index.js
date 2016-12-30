@@ -15,9 +15,12 @@ function dropletsCallback(error, response, body) {
       var droplet = droplets[i];
       //if there are more than 3 snapshots delete the oldest
       if (droplet.snapshot_ids.length >= config.maxSnapshots) {
-        deleteSnapshot(Math.min.apply(null, droplet.snapshot_ids));
+        var oldestSnapshotId = Math.min.apply(null, droplet.snapshot_ids);
+        log("Deleting old snapshot:" + oldestSnapshotId);
+        deleteSnapshot(oldestSnapshotId);
       }
       //Make a snapshot
+      log("Creating new snapshot for droplet: " + droplet.name);
       createSnapshot(droplet.id);
     }
   }
@@ -27,7 +30,7 @@ function deleteSnapshot(snapshotId) {
   request.delete({
     url: `https://api.digitalocean.com/v2/snapshots/${snapshotId}`,
     headers: header,
-  });
+  }, logResponse);
 }
 
 function createSnapshot(dropletId) {
@@ -38,10 +41,33 @@ function createSnapshot(dropletId) {
       type: "snapshot",
       name: "backup " + new Date().toDateString()
     },
-  });
+  }, logResponse);
 }
 
-console.log("Backup script started");
-setInterval(function(){
+//Logs any messages or logs any errors.
+function logResponse(error, response, body){
+  var message;
+  try {
+    if (body) message = JSON.parse(body).message;
+  } catch (err){
+    log(err);
+  }
+  if (error) log("Error occured:" + error);
+  if (message) log("Message: " + message);
+}
+
+function backup(){
+  log("Backup started");
   request.get(optionsDroplets, dropletsCallback);
+}
+
+function log(message){
+  console.log("[" + new Date().toLocaleString() + "]: " + message);
+}
+
+//Backup first time this script is run
+backup();
+
+setInterval(function(){
+  backup()
 }, 86400000 * config.intervalDays);
